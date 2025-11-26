@@ -1,22 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
     gsap.registerPlugin(ScrollTrigger);
 
-    // --- 1. HERO & TEXT SCRAMBLE (Existing) ---
+    // --- 1. HERO & TEXT SCRAMBLE ---
     const consoleLines = document.querySelectorAll(".console-text");
     const tl = gsap.timeline();
 
     tl.from(".hero-glitch", { duration: 1, opacity: 0, y: 20, ease: "power2.out" });
 
+    // Simplified typing effect without TextPlugin dependency
     consoleLines.forEach((line) => {
+        const originalText = line.innerText;
+        line.innerText = ""; 
         tl.to(line, {
-            opacity: 1, duration: 0.5,
-            text: line.innerText, 
-            onStart: () => { /* Scramble logic here if needed */ }
-        }, "-=0.2");
+            opacity: 1, 
+            duration: 0.5,
+            onStart: () => {
+                let i = 0;
+                const typeInterval = setInterval(() => {
+                    line.innerText = originalText.substring(0, i+1);
+                    i++;
+                    if (i >= originalText.length) clearInterval(typeInterval);
+                }, 20);
+            }
+        }, "-=0.1");
     });
     tl.to(".hero-cta-group", { opacity: 1, y: 0, duration: 0.5 });
 
-    // --- 2. CUSTOM CURSOR (Existing) ---
+    // --- 2. CUSTOM CURSOR ---
     const cursor = document.getElementById('cursor-highlight');
     if (window.matchMedia("(pointer: fine)").matches) {
         document.addEventListener('mousemove', (e) => {
@@ -24,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 3. HACKATHON TILT (Existing) ---
+    // --- 3. HACKATHON TILT ---
     const tiltCard = document.querySelector('.hack-main-card');
     if (tiltCard) {
         tiltCard.addEventListener('mousemove', (e) => {
@@ -45,33 +55,35 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 4. NEW: SEMINAR CARDS REVEAL ---
+    // --- 4. SEMINAR CARDS REVEAL ---
+    // Changed to autoAlpha to handle visibility + opacity
     gsap.from(".reveal-card", {
         scrollTrigger: {
             trigger: ".cyber-seminars",
-            start: "top 80%",
+            start: "top 85%",
         },
         y: 50,
-        opacity: 0,
+        autoAlpha: 0, 
         stagger: 0.2,
         duration: 0.8,
         ease: "back.out(1.7)"
     });
 
-    // --- 5. NEW: SKILL TREE NODES POP-IN ---
+    // --- 5. SKILL TREE NODES POP-IN ---
+    // Changed to autoAlpha to handle visibility + opacity
     gsap.from(".reveal-node", {
         scrollTrigger: {
             trigger: ".skill-tree-section",
-            start: "top 80%",
+            start: "top 85%",
         },
         scale: 0,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.5,
+        autoAlpha: 0,
+        stagger: 0.15,
+        duration: 0.6,
         ease: "elastic.out(1, 0.5)"
     });
 
-    // --- 6. NEW: LEADERBOARD SLIDE-IN ---
+    // --- 6. LEADERBOARD SLIDE-IN ---
     gsap.from(".lb-row", {
         scrollTrigger: {
             trigger: ".leaderboard-preview",
@@ -84,9 +96,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ease: "power2.out"
     });
 
-    // --- 7. TERMINAL LOGS (Existing) ---
+    // --- 7. TERMINAL LOGS ---
     gsap.from(".log-entry", {
-        scrollTrigger: { trigger: ".terminal-window", start: "top 80%" },
+        scrollTrigger: { trigger: ".terminal-window", start: "top 85%" },
         opacity: 0, x: -20, stagger: 0.2, duration: 0.5
     });
 });
