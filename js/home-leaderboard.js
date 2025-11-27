@@ -1,17 +1,24 @@
 // js/home-leaderboard.js
 
-// Configuration (Matches contributors.js)
 const REPO_OWNER = 'sayeeg-11';
 const REPO_NAME = 'Pixel_Phantoms';
 const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
-const XP_MULTIPLIER = 100; // Multiplier to convert Points (PTS) to XP
+const XP_MULTIPLIER = 100; // 1 Point = 100 XP
 
-// Point System Weights (Matches contributors.js)
+// Scoring System
 const POINTS = {
     L3: 11,
     L2: 5,
     L1: 2,
     DEFAULT: 1
+};
+
+// League Perks Definition
+const LEAGUES = {
+    GOLD: { threshold: 15000, name: 'Gold', perk: '🏆 Access to Core Team', color: '#FFD700' },
+    SILVER: { threshold: 7500, name: 'Silver', perk: '👕 Exclusive Merch', color: '#C0C0C0' },
+    BRONZE: { threshold: 3000, name: 'Bronze', perk: '👾 Discord VIP Badge', color: '#CD7F32' },
+    ROOKIE: { threshold: 0, name: 'Rookie', perk: '🌱 Contributor Role', color: '#00aaff' }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,27 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initLeaderboard() {
     try {
-        // 1. Fetch Pull Requests (Limit to 3 pages to match contributors logic)
         const pulls = await fetchAllPulls();
-        
-        // 2. Calculate scores based on labels
         const scores = calculateScores(pulls);
-        
-        // 3. Sort and get top 3 contributors
         const topContributors = getTopContributors(scores);
-        
-        // 4. Update the DOM
         updateLeaderboardUI(topContributors);
-        
     } catch (error) {
-        console.error("Failed to load leaderboard:", error);
+        console.error("Leaderboard Sync Failed:", error);
     }
 }
 
+// Fetch recent PR history (limit 3 pages for performance)
 async function fetchAllPulls() {
     let pulls = [];
     let page = 1;
-    // Fetch up to 3 pages (300 PRs) to ensure we capture recent history
     while (page <= 3) {
         try {
             const res = await fetch(`${API_BASE}/pulls?state=all&per_page=100&page=${page}`);
@@ -58,37 +57,24 @@ function calculateScores(pulls) {
     const statsMap = {};
 
     pulls.forEach(pr => {
-        // Only count merged PRs
         if (!pr.merged_at) return;
 
         const user = pr.user.login;
-        // Exclude the repo owner from the leaderboard
-        if (user.toLowerCase() === REPO_OWNER.toLowerCase()) return;
+        if (user.toLowerCase() === REPO_OWNER.toLowerCase()) return; // Exclude Admin
 
-        if (!statsMap[user]) {
-            statsMap[user] = 0;
-        }
+        if (!statsMap[user]) statsMap[user] = 0;
 
         let prPoints = 0;
         let hasLevel = false;
 
-        // Calculate points based on labels
         pr.labels.forEach(label => {
             const name = label.name.toLowerCase();
-            if (name.includes('level 3') || name.includes('level-3')) {
-                prPoints += POINTS.L3;
-                hasLevel = true;
-            } else if (name.includes('level 2') || name.includes('level-2')) {
-                prPoints += POINTS.L2;
-                hasLevel = true;
-            } else if (name.includes('level 1') || name.includes('level-1')) {
-                prPoints += POINTS.L1;
-                hasLevel = true;
-            }
+            if (name.includes('level 3')) { prPoints += POINTS.L3; hasLevel = true; }
+            else if (name.includes('level 2')) { prPoints += POINTS.L2; hasLevel = true; }
+            else if (name.includes('level 1')) { prPoints += POINTS.L1; hasLevel = true; }
         });
 
         if (!hasLevel) prPoints += POINTS.DEFAULT;
-
         statsMap[user] += prPoints;
     });
 
@@ -97,35 +83,60 @@ function calculateScores(pulls) {
 
 function getTopContributors(statsMap) {
     return Object.entries(statsMap)
-        .map(([login, points]) => ({ login, points }))
-        .sort((a, b) => b.points - a.points)
+        .map(([login, points]) => ({ login, xp: points * XP_MULTIPLIER }))
+        .sort((a, b) => b.xp - a.xp)
         .slice(0, 3);
+}
+
+function getLeagueInfo(xp) {
+    if (xp >= LEAGUES.GOLD.threshold) return LEAGUES.GOLD;
+    if (xp >= LEAGUES.SILVER.threshold) return LEAGUES.SILVER;
+    if (xp >= LEAGUES.BRONZE.threshold) return LEAGUES.BRONZE;
+    return LEAGUES.ROOKIE;
 }
 
 function updateLeaderboardUI(top3) {
     const rows = [
-        { selector: '.lb-row.gold', data: top3[0] },
-        { selector: '.lb-row.silver', data: top3[1] },
-        { selector: '.lb-row.bronze', data: top3[2] }
+        { selector: '.lb-row.gold', data: top3[0], rank: 1 },
+        { selector: '.lb-row.silver', data: top3[1], rank: 2 },
+        { selector: '.lb-row.bronze', data: top3[2], rank: 3 }
     ];
 
     rows.forEach(row => {
         const el = document.querySelector(row.selector);
-        
         if (el) {
-            const spans = el.querySelectorAll('span');
-            // Ensure we have the 3 spans: Rank, Name, XP
-            if (spans.length === 3) {
-                if (row.data) {
-                    spans[1].textContent = `@${row.data.login}`;
-                    // Calculate XP: Points * Multiplier
-                    const xp = row.data.points * XP_MULTIPLIER;
-                    spans[2].textContent = `${xp.toLocaleString()} XP`;
-                } else {
-                    // Placeholder if fewer than 3 contributors exist
-                    spans[1].textContent = "---";
-                    spans[2].textContent = "0 XP";
-                }
+            // Clear existing placeholder content
+            el.innerHTML = ''; 
+
+            if (row.data) {
+                const league = getLeagueInfo(row.data.xp);
+                
+                // Rank Badge
+                const rankSpan = document.createElement('div');
+                rankSpan.className = 'lb-rank';
+                rankSpan.innerHTML = `<span>#${row.rank}</span>`;
+                
+                // User Info
+                const userDiv = document.createElement('div');
+                userDiv.className = 'lb-user';
+                userDiv.innerHTML = `
+                    <span class="lb-name">@${row.data.login}</span>
+                    <span class="lb-perk" style="color:${league.color}; font-size: 0.75rem;">${league.perk}</span>
+                `;
+
+                // XP Info
+                const xpDiv = document.createElement('div');
+                xpDiv.className = 'lb-xp';
+                xpDiv.innerHTML = `${row.data.xp.toLocaleString()} <span class="xp-label">XP</span>`;
+
+                el.appendChild(rankSpan);
+                el.appendChild(userDiv);
+                el.appendChild(xpDiv);
+                
+                // Add league specific class for styling
+                el.style.borderLeftColor = league.color;
+            } else {
+                el.innerHTML = `<div class="lb-rank">#${row.rank}</div><div class="lb-user">---</div><div class="lb-xp">0 XP</div>`;
             }
         }
     });
