@@ -248,7 +248,102 @@ body {
     transform: scale(1.2) rotate(10deg);
 }
 
+<
+/* HAMBURGER BUTTON */
+.hamburger {
+    display: none; /* shown only on small screens */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    width: 48px;
+    height: 40px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    padding: 6px;
+    box-shadow: var(--shadow);
+}
+
+.hamburger .bar {
+    display: block;
+    width: 24px;
+    height: 3px;
+    background: var(--text-secondary);
+    border-radius: 2px;
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease;
+    transform-origin: center;
+}
+
+/* Open state: animate into an X */
+.hamburger.open .bar:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+.hamburger.open .bar:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+.hamburger.open .bar:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* MOBILE RESPONSIVE NAV */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 12px 18px;
+    }
+
+    /* Show hamburger, hide large horizontal layout */
+    .hamburger {
+        display: flex;
+    }
+
+    /* Make nav links a vertical, elevated panel */
+    .nav-links {
+        position: fixed;
+        top: 72px;
+        left: 16px;
+        right: 16px;
+        background: var(--bg-navbar);
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 12px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        transform-origin: top center;
+        transform: translateY(-8px) scaleY(0.98);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.22s ease;
+        z-index: 999;
+    }
+
+    .nav-links.open {
+        transform: translateY(0) scaleY(1);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .nav-links li {
+        width: 100%;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 12px 16px;
+        font-size: 18px;
+        border-radius: 8px;
+    }
+
+    /* Keep theme toggle aligned in mobile menu */
+    .theme-toggle { justify-content: flex-start; }
+}
+
+/* THEME TOGGLE */
+=======
 /* THEME TOGGLE - ENHANCED */
+
 .theme-toggle {
     display: flex;
     align-items: center;

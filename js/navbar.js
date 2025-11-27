@@ -5,6 +5,11 @@ function renderNavbar(basePath = '') {
             <img src="${basePath}assets/logo.png" alt="Pixel Phantoms Logo">
             <span>Pixel Phantoms</span>
         </div>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
         <ul class="nav-links">
             <li><a href="${basePath}index.html">Home</a></li>
             <li><a href="${basePath}about.html">About</a></li>
@@ -24,7 +29,44 @@ function renderNavbar(basePath = '') {
         </ul>
     </nav>
     `;
+    // Render HTML
     document.getElementById('navbar-placeholder').innerHTML = navbarHTML;
+
+
+    // Add toggle behavior for hamburger (scoped to this navbar instance)
+    const container = document.getElementById('navbar-placeholder');
+    const hamburger = container.querySelector('.hamburger');
+    const navLinks = container.querySelector('.nav-links');
+
+    if (hamburger && navLinks) {
+        // toggle on click
+        hamburger.addEventListener('click', function () {
+            const expanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', String(!expanded));
+            navLinks.classList.toggle('open');
+            this.classList.toggle('open');
+        });
+
+        // close when a link is clicked (mobile behavior)
+        container.querySelectorAll('.nav-links a').forEach(function (a) {
+            a.addEventListener('click', function () {
+                navLinks.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // close on escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                navLinks.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+}
+
 }
 
 const currentPage = window.location.pathname.split("/").pop() || 'index.html';
