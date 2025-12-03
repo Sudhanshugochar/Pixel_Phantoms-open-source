@@ -23,6 +23,18 @@ const SCORING = {
     }
 };
 
+// --- ACHIEVEMENT SYSTEM ---
+const ACHIEVEMENTS = [
+    { id: 'first_pr', name: 'First PR', description: 'Submitted your first pull request', icon: 'fas fa-code-branch', xp: 100 },
+    { id: 'ten_prs', name: 'PR Master', description: 'Submitted 10 pull requests', icon: 'fas fa-code', xp: 500 },
+    { id: 'high_complexity', name: 'Complex Solver', description: 'Submitted a Level 3 PR', icon: 'fas fa-brain', xp: 300 },
+    { id: 'consistent_contributor', name: 'Consistent Contributor', description: 'Active for 30 days', icon: 'fas fa-calendar-check', xp: 400 },
+    { id: 'team_player', name: 'Team Player', description: 'Participated in 3 events', icon: 'fas fa-users', xp: 250 },
+    { id: 'speed_demon', name: 'Speed Demon', description: 'Merged PR within 24 hours', icon: 'fas fa-bolt', xp: 200 },
+    { id: 'quality_assurance', name: 'Quality Assurance', description: 'PR with no review comments', icon: 'fas fa-check-circle', xp: 150 },
+    { id: 'community_leader', name: 'Community Leader', description: 'Hosted an event', icon: 'fas fa-crown', xp: 1000 }
+];
+
 // --- STATE MANAGEMENT ---
 let globalState = {
     contributors: [],
@@ -35,13 +47,16 @@ let globalState = {
     physics: {
         totalMass: 0,
         avgVelocity: 0
-    }
+    },
+    achievements: {}, // Track user achievements
+    currentUser: null // Track currently viewed user
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
     initNavigation();
     init3DInteraction();
+    initComparisonFeature();
 });
 
 /* =========================================
@@ -57,6 +72,7 @@ function initNavigation() {
         'dashboard-view': { t: 'PERFORMANCE_MATRIX', s: ':: SYSTEM OVERRIDE // EVENT_PROTOCOL_V2 ::' },
         'teams-view':     { t: 'AGENT_ROSTER', s: ':: CLASSIFIED PERSONNEL DATABASE ::' },
         'projects-view':  { t: 'PROJECT_SCHEMATICS', s: ':: R&D ARCHIVES ::' },
+        'achievements-view': { t: 'ACHIEVEMENTS', s: ':: UNLOCK YOUR POTENTIAL ::' },
         'settings-view':  { t: 'SYSTEM_CONFIG', s: ':: ROOT ACCESS REQUIRED ::' }
     };
 
@@ -78,6 +94,11 @@ function initNavigation() {
                 title.setAttribute('data-text', titles[targetId].t);
                 title.innerText = titles[targetId].t;
                 subtitle.innerText = titles[targetId].s;
+            }
+
+            // Initialize view-specific features
+            if (targetId === 'achievements-view') {
+                renderAchievements();
             }
         });
     });
@@ -117,6 +138,9 @@ async function initDashboard() {
         
         // Render Roster (Teams View)
         populateRoster(leaderboard);
+
+        // Store contributors for later use
+        globalState.contributors = leaderboard;
 
     } catch (error) {
         console.warn("⚠️ System Offline or Rate Limited. engaging_mock_protocol();", error);
@@ -177,17 +201,49 @@ function calculateLeaderboard(pulls, eventsData) {
         // -- Mass Calculation (Complexity based on labels) --
         let prPoints = SCORING.PR.DEFAULT;
         let massGain = 5; // Base mass
+        let hasHighComplexity = false;
 
         pr.labels.forEach(label => {
             const name = label.name.toLowerCase();
-            if (name.includes('level 3')) { prPoints = SCORING.PR.L3; massGain = 30; }
-            else if (name.includes('level 2')) { prPoints = SCORING.PR.L2; massGain = 15; }
-            else if (name.includes('level 1')) { prPoints = SCORING.PR.L1; massGain = 10; }
+            if (name.includes('level 3')) { 
+                prPoints = SCORING.PR.L3; 
+                massGain = 30; 
+                hasHighComplexity = true;
+            }
+            else if (name.includes('level 2')) { 
+                prPoints = SCORING.PR.L2; 
+                massGain = 15; 
+            }
+            else if (name.includes('level 1')) { 
+                prPoints = SCORING.PR.L1; 
+                massGain = 10; 
+            }
         });
 
         userMap[user].xp += prPoints;
         userMap[user].mass += massGain;
         userMap[user].prCount++;
+
+        // Track achievements
+        if (!userMap[user].achievements) userMap[user].achievements = {};
+        
+        // First PR achievement
+        if (userMap[user].prCount === 1) {
+            userMap[user].achievements['first_pr'] = true;
+            userMap[user].xp += ACHIEVEMENTS.find(a => a.id === 'first_pr').xp;
+        }
+        
+        // Ten PRs achievement
+        if (userMap[user].prCount === 10) {
+            userMap[user].achievements['ten_prs'] = true;
+            userMap[user].xp += ACHIEVEMENTS.find(a => a.id === 'ten_prs').xp;
+        }
+        
+        // High complexity achievement
+        if (hasHighComplexity) {
+            userMap[user].achievements['high_complexity'] = true;
+            userMap[user].xp += ACHIEVEMENTS.find(a => a.id === 'high_complexity').xp;
+        }
 
         // -- Velocity Calculation (Recent Activity) --
         if (new Date(pr.merged_at) > recentCutoff) {
@@ -241,7 +297,8 @@ function initUser(map, login, avatar) {
         mass: 0,      
         velocity: 0,  
         events: 0,
-        prCount: 0
+        prCount: 0,
+        achievements: {}
     };
 }
 
@@ -273,6 +330,7 @@ function renderLeaderboardTable(data) {
     // Show top 50
     data.slice(0, 50).forEach(agent => {
         const row = document.createElement('tr');
+        row.addEventListener('click', () => openModal(agent));
         
         // Dynamic colors based on status/class
         let classColor = '#00f3ff'; // Default Cyan
@@ -423,6 +481,204 @@ function init3DInteraction() {
 }
 
 /* =========================================
+   6. ACHIEVEMENTS SYSTEM
+   ========================================= */
+function renderAchievements() {
+    const container = document.getElementById('achievements-grid');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    ACHIEVEMENTS.forEach(achievement => {
+        const card = document.createElement('div');
+        card.className = 'achievement-card';
+        card.innerHTML = `
+            <div class="achievement-icon">
+                <i class="${achievement.icon}"></i>
+            </div>
+            <div class="achievement-info">
+                <h4>${achievement.name}</h4>
+                <p>${achievement.description}</p>
+                <span class="xp-value">+${achievement.xp} XP</span>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+/* =========================================
+   7. COMPARISON FEATURE
+   ========================================= */
+function initComparisonFeature() {
+    const compareBtn = document.getElementById('compare-btn');
+    if (compareBtn) {
+        compareBtn.addEventListener('click', () => {
+            const select = document.getElementById('compare-user-select');
+            const selectedUser = select.value;
+            if (selectedUser && globalState.contributors.length > 0) {
+                const user = globalState.contributors.find(u => u.login === selectedUser);
+                if (user) showComparison(user);
+            }
+        });
+    }
+}
+
+function populateUserSelect(users) {
+    const select = document.getElementById('compare-user-select');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">Select a user to compare</option>';
+    
+    users.slice(0, 20).forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.login;
+        option.textContent = `${user.login} (${user.xp} XP)`;
+        select.appendChild(option);
+    });
+}
+
+function showComparison(compareUser) {
+    const currentUser = globalState.currentUser;
+    const container = document.getElementById('comparison-results');
+    if (!container || !currentUser) return;
+    
+    // Find the current user in the contributors list
+    const current = globalState.contributors.find(u => u.login === currentUser);
+    if (!current) return;
+    
+    container.innerHTML = `
+        <div class="comparison-charts">
+            <div class="chart-container">
+                <h4>XP Comparison</h4>
+                <div class="comparison-bar">
+                    <div class="bar-label">${current.login}</div>
+                    <div class="bar-track">
+                        <div class="bar-fill current" style="width: ${Math.min((current.xp / Math.max(current.xp, compareUser.xp)) * 100, 100)}%"></div>
+                    </div>
+                    <div class="bar-value">${current.xp.toLocaleString()}</div>
+                </div>
+                <div class="comparison-bar">
+                    <div class="bar-label">${compareUser.login}</div>
+                    <div class="bar-track">
+                        <div class="bar-fill compare" style="width: ${Math.min((compareUser.xp / Math.max(current.xp, compareUser.xp)) * 100, 100)}%"></div>
+                    </div>
+                    <div class="bar-value">${compareUser.xp.toLocaleString()}</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h4>PR Count Comparison</h4>
+                <div class="comparison-bar">
+                    <div class="bar-label">${current.login}</div>
+                    <div class="bar-track">
+                        <div class="bar-fill current" style="width: ${Math.min((current.prCount / Math.max(current.prCount, compareUser.prCount)) * 100, 100)}%"></div>
+                    </div>
+                    <div class="bar-value">${current.prCount}</div>
+                </div>
+                <div class="comparison-bar">
+                    <div class="bar-label">${compareUser.login}</div>
+                    <div class="bar-track">
+                        <div class="bar-fill compare" style="width: ${Math.min((compareUser.prCount / Math.max(current.prCount, compareUser.prCount)) * 100, 100)}%"></div>
+                    </div>
+                    <div class="bar-value">${compareUser.prCount}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-stats">
+            <div class="stat-card">
+                <h4>Winner</h4>
+                <p class="winner">${current.xp > compareUser.xp ? current.login : compareUser.login}</p>
+            </div>
+            <div class="stat-card">
+                <h4>XP Difference</h4>
+                <p>${Math.abs(current.xp - compareUser.xp).toLocaleString()} XP</p>
+            </div>
+            <div class="stat-card">
+                <h4>PR Difference</h4>
+                <p>${Math.abs(current.prCount - compareUser.prCount)}</p>
+            </div>
+        </div>
+    `;
+}
+
+/* =========================================
+   8. MODAL FUNCTIONALITY
+   ========================================= */
+function openModal(contributor) {
+    globalState.currentUser = contributor.login;
+    
+    const modal = document.getElementById('contributor-modal');
+    const modalContainer = modal.querySelector('.modal-container');
+    document.getElementById('modal-avatar').src = contributor.avatar;
+    document.getElementById('modal-name').textContent = contributor.login;
+    document.getElementById('modal-id').textContent = `ID: ${contributor.id || 'N/A'}`; 
+    document.getElementById('modal-rank').textContent = `#${contributor.rank}`;
+    document.getElementById('modal-score').textContent = contributor.xp;
+    document.getElementById('modal-prs').textContent = contributor.prCount;
+    document.getElementById('modal-commits').textContent = contributor.contributions || 0;
+    document.getElementById('modal-league-badge').textContent = contributor.class || 'Contributor';
+    
+    // Progress bar
+    const levelProgress = (contributor.xp % 1000) / 10; // Simple progress calculation
+    document.getElementById('progress-fill').style.width = `${levelProgress}%`;
+    document.getElementById('progress-text').textContent = `Level Progress: ${Math.round(levelProgress)}%`;
+    
+    // Check for links in mock mode
+    const prLink = contributor.html_url && contributor.html_url !== '#' 
+        ? `https://github.com/${REPO_OWNER}/${REPO_NAME}/pulls?q=is%3Apr+author%3A${contributor.login}` 
+        : '#';
+        
+    document.getElementById('modal-pr-link').href = prLink;
+    document.getElementById('modal-profile-link').href = contributor.html_url || '#';
+
+    // Render achievements
+    renderUserAchievements(contributor.achievements);
+
+    modalContainer.className = 'modal-container'; 
+    // Add class based on contributor class for styling
+    if (contributor.class) {
+        modalContainer.classList.add(`tier-${contributor.class.toLowerCase()}`);
+    }
+    modal.classList.add('active');
+}
+
+function renderUserAchievements(achievements) {
+    const container = document.getElementById('modal-achievements');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (!achievements || Object.keys(achievements).length === 0) {
+        container.innerHTML = '<p class="no-achievements">No achievements yet. Keep contributing!</p>';
+        return;
+    }
+    
+    Object.keys(achievements).forEach(achId => {
+        if (achievements[achId]) {
+            const achievement = ACHIEVEMENTS.find(a => a.id === achId);
+            if (achievement) {
+                const achElement = document.createElement('div');
+                achElement.className = 'modal-achievement';
+                achElement.innerHTML = `
+                    <i class="${achievement.icon}"></i>
+                    <div>
+                        <h5>${achievement.name}</h5>
+                        <p>${achievement.description}</p>
+                    </div>
+                `;
+                container.appendChild(achElement);
+            }
+        }
+    });
+}
+
+window.closeModal = function() {
+    const modal = document.getElementById('contributor-modal');
+    if(modal) modal.classList.remove('active');
+}
+
+/* =========================================
    UTILS & MOCK DATA (Fallback)
    ========================================= */
 function animateCount(id, target) {
@@ -469,11 +725,11 @@ function exportLeaderboard(data) {
 function loadMockProtocol() {
     // Fallback data if API fails
     const mockData = [
-        { login: "Neo_One", avatar_url: "", xp: 15000, velocity: 90, mass: 80, prCount: 15, events: 5, rank: 1, class: "TITAN", status: "OVERDRIVE" },
-        { login: "Trinity", avatar_url: "", xp: 12500, velocity: 75, mass: 50, prCount: 12, events: 4, rank: 2, class: "STRIKER", status: "ONLINE" },
-        { login: "Morpheus", avatar_url: "", xp: 9800, velocity: 40, mass: 60, prCount: 20, events: 1, rank: 3, class: "TITAN", status: "ONLINE" },
-        { login: "Cipher", avatar_url: "", xp: 5000, velocity: 10, mass: 20, prCount: 5, events: 8, rank: 4, class: "SCOUT", status: "IDLE" },
-        { login: "Switch", avatar_url: "", xp: 3200, velocity: 85, mass: 10, prCount: 8, events: 0, rank: 5, class: "STRIKER", status: "ONLINE" },
+        { login: "Neo_One", avatar_url: "", xp: 15000, velocity: 90, mass: 80, prCount: 15, events: 5, rank: 1, class: "TITAN", status: "OVERDRIVE", achievements: {'first_pr': true, 'ten_prs': true, 'high_complexity': true} },
+        { login: "Trinity", avatar_url: "", xp: 12500, velocity: 75, mass: 50, prCount: 12, events: 4, rank: 2, class: "STRIKER", status: "ONLINE", achievements: {'first_pr': true, 'ten_prs': true} },
+        { login: "Morpheus", avatar_url: "", xp: 9800, velocity: 40, mass: 60, prCount: 20, events: 1, rank: 3, class: "TITAN", status: "ONLINE", achievements: {'first_pr': true, 'ten_prs': true, 'team_player': true} },
+        { login: "Cipher", avatar_url: "", xp: 5000, velocity: 10, mass: 20, prCount: 5, events: 8, rank: 4, class: "SCOUT", status: "IDLE", achievements: {'first_pr': true, 'team_player': true} },
+        { login: "Switch", avatar_url: "", xp: 3200, velocity: 85, mass: 10, prCount: 8, events: 0, rank: 5, class: "STRIKER", status: "ONLINE", achievements: {'first_pr': true} },
     ];
     
     const mockStats = { totalEvents: 15, totalAttendance: 450 };
@@ -483,4 +739,7 @@ function loadMockProtocol() {
     renderPhysicsEngine(mockData);
     renderVisualizers(mockData);
     populateRoster(mockData);
+    
+    // Store contributors for later use
+    globalState.contributors = mockData;
 }

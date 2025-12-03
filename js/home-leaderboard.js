@@ -25,6 +25,14 @@ const LEAGUES = {
     ROOKIE: { threshold: 0, name: 'Rookie Agent', color: '#00aaff' }
 };
 
+// Enhanced achievements for home page
+const HOME_ACHIEVEMENTS = [
+    { id: 'first_pr', name: 'First PR', description: 'Submitted your first pull request', icon: 'fas fa-code-branch' },
+    { id: 'ten_prs', name: 'PR Master', description: 'Submitted 10 pull requests', icon: 'fas fa-code' },
+    { id: 'high_complexity', name: 'Complex Solver', description: 'Submitted a Level 3 PR', icon: 'fas fa-brain' },
+    { id: 'team_player', name: 'Team Player', description: 'Participated in 3 events', icon: 'fas fa-users' }
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     initLeaderboard();
 });
@@ -43,7 +51,8 @@ async function initLeaderboard() {
         const leaderboard = calculateLeaderboard(pulls, attendanceData);
         const topContributors = getTopContributors(leaderboard);
         
-        renderLeaderboard(topContributors);
+        // Use the enhanced rendering function
+        renderHomeLeaderboard(topContributors);
     } catch (error) {
         console.error("Leaderboard Sync Failed:", error);
         if(container) container.innerHTML = `<div style="padding:20px; text-align:center; color:#ff5f56;">Connection Lost. Retrying uplink...</div>`;
@@ -122,6 +131,7 @@ function calculateLeaderboard(pulls, attendanceMap) {
         // Award XP based on PR labels
         let prPoints = SCORING.PR.DEFAULT;
         let hasLevel = false;
+        let hasHighComplexity = false;
 
         pr.labels.forEach(label => {
             const name = label.name.toLowerCase();
@@ -169,7 +179,8 @@ function getLeagueInfo(xp) {
     return LEAGUES.ROOKIE;
 }
 
-function renderLeaderboard(contributors) {
+// Enhanced rendering function that uses the new leaderboard-enhanced.js features
+function renderHomeLeaderboard(contributors) {
     const container = document.getElementById('lb-rows');
     if (!container) return;
     
@@ -202,6 +213,11 @@ function renderLeaderboard(contributors) {
                 ${contributor.xp.toLocaleString()} XP
             </div>
         `;
+        
+        // Add click event to open detailed modal
+        row.addEventListener('click', () => {
+            openHomeModal(contributor);
+        });
         
         container.appendChild(row);
         
