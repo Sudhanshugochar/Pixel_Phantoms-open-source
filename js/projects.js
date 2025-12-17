@@ -178,3 +178,64 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Projects page fully initialized with quick filters');
 });
+
+// Extend the filter system to work with favorites
+document.addEventListener('DOMContentLoaded', function() {
+    // Override filter function to include favorites
+    const originalFilterFunction = window.initFilters;
+    
+    window.initFilters = function() {
+        // Call original function
+        if (originalFilterFunction) originalFilterFunction();
+        
+        // Initialize favorites integration
+        initFavoritesIntegration();
+    };
+    
+    function initFavoritesIntegration() {
+        // Wait for favorites manager to initialize
+        setTimeout(() => {
+            if (window.FavoritesManager) {
+                // Update filter counts to include favorites
+                updateFilterCountsWithFavorites();
+                
+                // Add favorites to mobile filter
+                addFavoritesToMobileFilter();
+            }
+        }, 1000);
+    }
+    
+    function updateFilterCountsWithFavorites() {
+        const favoritesCount = document.getElementById('count-favorites');
+        if (favoritesCount) {
+            const count = window.FavoritesManager.getFavorites().length;
+            favoritesCount.textContent = count;
+        }
+    }
+    
+    function addFavoritesToMobileFilter() {
+        const mobileSelect = document.getElementById('mobile-filter-select');
+        if (mobileSelect) {
+            // Check if favorites option already exists
+            let hasFavorites = false;
+            Array.from(mobileSelect.options).forEach(option => {
+                if (option.value === 'favorites') hasFavorites = true;
+            });
+            
+            // Add favorites option if not exists
+            if (!hasFavorites) {
+                const option = document.createElement('option');
+                option.value = 'favorites';
+                option.textContent = 'My Favorites';
+                mobileSelect.appendChild(option);
+            }
+            
+            // Update change handler
+            mobileSelect.addEventListener('change', function() {
+                if (this.value === 'favorites') {
+                    window.FavoritesManager.filterFavorites();
+                }
+            });
+        }
+    }
+});
