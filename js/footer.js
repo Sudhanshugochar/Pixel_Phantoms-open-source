@@ -1,10 +1,3 @@
-/**
- * Loads the footer and injects it into the page
- * Automatically adjusts paths based on the page location
- * 
- * Footer HTML is embedded here for compatibility with file:// protocol
- * Source: footer.html (keep in sync)
- */
 function renderFooter(basePath = "") {
     const placeholder = document.getElementById("footer-placeholder");
     
@@ -13,7 +6,6 @@ function renderFooter(basePath = "") {
         return;
     }
 
-    // Footer HTML (synced from footer.html)
     const footerHTML = `
     <footer class="site-footer dynamic-electronic">
         <div class="signal-grid" aria-hidden="true">
@@ -58,7 +50,7 @@ function renderFooter(basePath = "") {
                         <ul class="link-list">
                             <li><a href="${basePath}pages/community.html">Community</a></li>
                             <li><a href="${basePath}pages/projects.html">Projects</a></li>
-                            <li><a href="${basePath}pages/gallery.html">Gallery</a></li>
+                            <li><a href="${basePath}pages/leaderboard.html">Leaderboard</a></li>
                             <li><a href="${basePath}pages/join-us.html">Join Us</a></li>
                         </ul>
                     </div>
@@ -67,8 +59,8 @@ function renderFooter(basePath = "") {
                         <ul class="link-list">
                             <li><a href="${basePath}contact.html">Contact</a></li>
                             <li><a href="${basePath}pages/help.html">Help Center</a></li>
-                            <li><a href="${basePath}pages/privacy.html">Privacy Policy</a></li>
-                            <li><a href="${basePath}pages/terms.html">Terms of Service</a></li>
+                            <li><a href="${basePath}CONTRIBUTING.md">Contributor Guide</a></li>
+                            <li><a href="${basePath}CODE_OF_CONDUCT.md">Code of Conduct</a></li>
                         </ul>
                     </div>
                 </div>
@@ -89,7 +81,9 @@ function renderFooter(basePath = "") {
                 <div class="footer-bottom-content">
                     <p class="copyright">&copy; 2025 Pixel Phantoms. All rights reserved.</p>
                     <div class="footer-bottom-links">
-                        <a href="${basePath}pages/privacy.html" class="bottom-link">Privacy</a> | <a href="${basePath}pages/terms.html" class="bottom-link">Terms</a> | <a href="#" class="bottom-link">Sitemap</a>
+                        <a href="${basePath}pages/privacy.html" class="bottom-link">Privacy</a> | 
+                        <a href="${basePath}pages/terms.html" class="bottom-link">Terms</a> | 
+                        <a href="${basePath}pages/tutorials/phantom-node.html" class="bottom-link">Tutorials</a>
                     </div>
                 </div>
             </div>
