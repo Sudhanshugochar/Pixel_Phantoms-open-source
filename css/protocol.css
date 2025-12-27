@@ -1,11 +1,13 @@
+/* Centering and Visibility Logic */
 body {
     margin: 0;
     overflow-x: hidden;
     background: #05070a;
     display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Action Plan 3: Positioning from top */
+    justify-content: center; /* Center horizontally */
+    align-items: flex-start; /* Positioning from top */
     min-height: 100vh;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 #signalCanvas {
@@ -16,51 +18,52 @@ body {
     pointer-events: none;
 }
 
+/* Centered Wrapper like index.html */
 .protocol-wrapper {
     width: 90%;
     max-width: 1200px;
-    padding: 100px 0; /* Action Plan 3: Center from height */
+    padding: 100px 0; /* Center from height */
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Enhanced Box Design with High Visibility Text */
+.protocol-box {
+    background: rgba(13, 17, 23, 0.9); /* Darker for better text contrast */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 15px;
+    flex: 1;
+    min-width: 320px;
+    margin: 20px; /* Equal distance around */
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(15px);
+    color: #ffffff; /* Explicitly white text */
+    text-align: left;
+}
+
+/* Hover: Glowing Behind and "Bones" structure */
+.protocol-box:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 0 60px rgba(0, 170, 255, 0.3); /* Glow behind */
+    border: 2px solid var(--accent-color, #00aaff); /* Structural Bone effect */
+}
+
+/* High Visibility Typography */
+.glitch-title {
+    font-size: 4rem;
+    margin-bottom: 60px;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
 }
 
 .bento-container {
     display: flex;
-    gap: 40px; /* Action Plan 4: Separate equal distance */
+    gap: 20px; 
     justify-content: center;
-    margin-bottom: 60px;
     flex-wrap: wrap;
-}
-
-.protocol-box {
-    background: rgba(13, 17, 23, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 35px;
-    border-radius: 15px;
-    flex: 1;
-    min-width: 300px;
-    position: relative;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    backdrop-filter: blur(10px);
-}
-
-/* Action Plan 4: Hover with Glowing Behind and Bones feature */
-.protocol-box:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 0 50px rgba(0, 170, 255, 0.2); /* Glow behind */
-    border: 2px solid var(--accent-color, #00aaff); /* Structural Bone effect */
-}
-
-/* Action Plan 5: Glowing Rules separate from content */
-.glowing-rule {
-    background: rgba(255, 255, 255, 0.03);
-    border-left: 4px solid #00aaff;
-    margin: 15px 0;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: inset 0 0 10px rgba(0, 170, 255, 0.1);
-    transition: 0.3s;
-}
-
-.glowing-rule:hover {
-    box-shadow: 0 0 20px rgba(0, 170, 255, 0.3); /* Action Plan 5: Glowing effect */
+    width: 100%;
 }

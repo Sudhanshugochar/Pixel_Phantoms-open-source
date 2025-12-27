@@ -1,7 +1,7 @@
 const canvas = document.getElementById('signalCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
-const particleCount = 1000; // Action Plan 2: 1000 signals
+const particleCount = 1000; // Action Plan: 1000 signals
 
 function initCanvas() {
     canvas.width = window.innerWidth;
@@ -19,10 +19,10 @@ class Signal {
     reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.speed = Math.random() * 2 + 1;
+        this.speed = Math.random() * 2 + 0.5;
         this.length = Math.random() * 100 + 50;
         this.color = Math.random() > 0.5 ? '#00aaff' : '#bc13fe';
-        this.opacity = Math.random() * 0.5;
+        this.opacity = Math.random() * 0.4;
     }
     draw() {
         ctx.beginPath();
@@ -32,10 +32,11 @@ class Signal {
         ctx.globalAlpha = this.opacity;
         ctx.lineWidth = 1;
         ctx.stroke();
+        
         this.y += this.speed;
         if (this.y > canvas.height) {
+            this.reset();
             this.y = -this.length;
-            this.x = Math.random() * canvas.width;
         }
     }
 }
