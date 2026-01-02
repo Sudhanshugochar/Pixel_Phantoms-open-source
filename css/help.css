@@ -385,3 +385,114 @@
     transform: translateY(-5px);
     box-shadow: 0 15px 35px rgba(0, 170, 255, 0.4);
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .help-hero {
+        padding: 100px 20px 60px;
+    }
+
+    .help-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .help-hero p {
+        font-size: 1rem;
+    }
+
+    .search-wrapper {
+        max-width: 100%;
+    }
+
+    .help-search {
+        padding: 15px 20px 15px 50px;
+        font-size: 1rem;
+    }
+
+    .help-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .help-card {
+        padding: 30px 20px;
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .help-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .help-card p {
+        margin-bottom: 20px;
+    }
+
+    .team-desc-card {
+        padding: 40px;
+        max-width: 90%;
+    }
+
+    .team-desc-card h3 {
+        font-size: 2.5rem;
+    }
+
+    .team-desc-card p {
+        font-size: 1.1rem;
+    }
+
+    .btn-primary {
+        padding: 15px 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .help-hero h1 {
+        font-size: 2rem;
+    }
+
+    .help-hero p {
+        font-size: 0.9rem;
+    }
+
+    .help-search {
+        padding: 12px 15px 12px 45px;
+        font-size: 0.9rem;
+    }
+
+    .help-card {
+        padding: 25px 15px;
+    }
+
+    .icon-box {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+
+    .help-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .team-desc-card {
+        padding: 30px;
+    }
+
+    .team-desc-card h3 {
+        font-size: 2rem;
+    }
+
+    .team-desc-card p {
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        padding: 12px 30px;
+        font-size: 0.9rem;
+    }
+}

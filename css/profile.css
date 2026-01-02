@@ -682,3 +682,53 @@
 @keyframes spin {
     to { transform: translate(-50%, -50%) rotate(360deg); }
 }
+
+/* ===============================================
+   UPDATED PROFILE NAVIGATION BUTTONS
+   =============================================== */
+
+/* Ensures link-based buttons match the height and alignment of button-based elements */
+.profile-actions .btn-cyber-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    gap: 8px;
+    padding: 12px 24px;
+    min-height: 44px;
+    box-sizing: border-box;
+}
+
+/* Hover effect for System Rules (Cyan Glow) */
+.profile-actions a[href="protocol.html"]:hover {
+    border-color: #00f2fe;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    background: rgba(0, 242, 254, 0.1);
+    color: #00f2fe;
+}
+
+/* Hover effect for Global Rankings (Purple Glow) */
+.profile-actions a[href="leaderboard.html"]:hover {
+    border-color: #bc13fe;
+    box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
+    background: rgba(188, 19, 254, 0.1);
+    color: #bc13fe;
+}
+
+/* Responsive adjustment for small screens to prevent overlap */
+@media (max-width: 768px) {
+    .profile-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .profile-actions .btn-cyber,
+    .profile-actions .btn-cyber-outline {
+        width: 100%;
+        font-size: 0.75rem;
+        padding: 12px 10px;
+        justify-content: center;
+    }
+}

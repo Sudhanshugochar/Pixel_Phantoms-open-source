@@ -1,29 +1,35 @@
-// Theme management with localStorage persistence
+// abhishekkumar177/pixel_phantoms/Pixel_Phantoms-main/js/theme.js
+
 document.addEventListener('DOMContentLoaded', function() {
     const themeSwitch = document.getElementById('theme-switch');
-    const htmlElement = document.documentElement;
+    const bodyElement = document.body;
     
-    // Check for saved theme preference or default to dark
+    // 1. Check for saved preference or system default
     const savedTheme = localStorage.getItem('theme') || 'dark';
     
-    // Apply the saved theme
-    htmlElement.setAttribute('data-theme', savedTheme);
-    
-    // Set the toggle state based on saved theme
-    if (savedTheme === 'light') {
-        themeSwitch.checked = true;
-    }
-    
-    // Theme toggle functionality
-    themeSwitch.addEventListener('change', function() {
-        if (this.checked) {
-            htmlElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
-        } else {
-            htmlElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-        }
-    });
-    
+    // 2. Apply theme to body for full-page effect
+    applyTheme(savedTheme);
 
+    // 3. Sync the toggle switch UI
+    if (themeSwitch) {
+        themeSwitch.checked = (savedTheme === 'light');
+        
+        themeSwitch.addEventListener('change', function() {
+            const newTheme = this.checked ? 'light' : 'dark';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    }
+
+    function applyTheme(theme) {
+        if (theme === 'light') {
+            bodyElement.classList.add('light-mode');
+            bodyElement.classList.remove('dark-mode');
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            bodyElement.classList.add('dark-mode');
+            bodyElement.classList.remove('light-mode');
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    }
 });
