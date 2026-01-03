@@ -46,26 +46,40 @@ function renderNavbar(basePath = '') {
 
 // Set the active nav item based on the current page URL
 function setActiveNavItem() {
-  // Get current page filename
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  // Get the full current URL
+  const currentUrl = window.location.href;
+  console.log('Current URL:', currentUrl);
+  
   const navLinks = document.querySelectorAll('.nav-links a');
-
+  
   navLinks.forEach(function (link) {
     // Remove active class from all links
     link.classList.remove('active');
 
-    // Get the href and extract the filename
     const href = link.getAttribute('href');
     if (href) {
-      const linkPage = href.split('/').pop();
-      // Check if this link matches the current page
-      if (linkPage === currentPage) {
-        link.classList.add('active');
+      try {
+        // Create absolute URL for comparison
+        const absoluteUrl = new URL(href, window.location.origin).href;
+        
+        // Compare URLs
+        if (currentUrl === absoluteUrl || 
+            currentUrl + '/' === absoluteUrl ||
+            currentUrl === absoluteUrl + '/') {
+          link.classList.add('active');
+        }
+      } catch (e) {
+        // Fallback: simple filename comparison
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        const linkPage = href.split('/').pop();
+        
+        if (linkPage === currentPage) {
+          link.classList.add('active');
+        }
       }
     }
   });
 }
-
 function initMobileMenu() {
   const container = document.getElementById('navbar-placeholder');
   const hamburger = container.querySelector('.hamburger');

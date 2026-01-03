@@ -3,22 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Learn about Pixel Phantoms - a student-driven tech club focused on empowering learners through coding, collaboration, and community."
+    />
+    <meta property="og:title" content="Pixel Phantoms | About" />
+    <meta
+      property="og:description"
+      content="Learn about Pixel Phantoms - a student-driven tech club focused on empowering learners through coding, collaboration, and community."
+    />
+    <meta property="og:image" content="assets/logo.png" />
+    <meta property="og:url" content="https://pixelphantoms.com/about.html" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://pixelphantoms.com/about.html" />
     <title>Pixel Phantoms | About</title>
     <link rel="icon" href="assets/logo.png" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/about.css">
-    <link rel="stylesheet" href="css/back-to-top.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="css/scroll-progress.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/about.css" />
+    <link rel="stylesheet" href="css/home-gsap.css" />
+    <link rel="stylesheet" href="css/back-to-top.css" />
     <link rel="stylesheet" href="css/cursor-effect.css" />
-    <link rel="stylesheet" href="css/scroll-buttons.css" />
+    <link rel="stylesheet" href="css/login.css" />
+    <link rel="stylesheet" href="css/events.css" />
+    <style>
+      /* Minimal modal styles that reuse login.css form classes */
+      #register-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); z-index: 9999; }
+      #register-modal.show { display: flex; }
+      #register-modal .modal-dialog { max-width: 560px; width: 100%; padding: 20px; border-radius: 14px; position: relative; }
+      #register-modal .modal-close { position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: var(--text-primary); font-size: 1.4rem; cursor: pointer; }
+      #register-modal .register-form .input-group { margin-bottom: 12px; }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
+
   <body class="hacker-theme">
+    <div id="scroll-progress-container">
+      <div id="scroll-progress-bar"></div>
+    </div>
+    
     <!-- SKIP TO CONTENT LINK (ACCESSIBILITY) -->
-    <a href="#main-content" class="skip-to-content" id="skip-link">
-      <i class="fas fa-forward" aria-hidden="true"></i>Skip to main content
+    <a href="#main-about" class="skip-to-content" id="skip-link">
+      <i class="fas fa-forward"></i> Skip to Main Content
     </a>
 
     <div id="cursor-highlight"></div>
@@ -27,158 +61,172 @@
     <script>
       renderNavbar();
     </script>
-    <div id="scroll-progress-container">
-      <div id="scroll-progress-bar"></div>
-    </div>
 
-    <main id="main-content" tabindex="-1">
-      <!-- Hero Section -->
-      <section class="hero-section" role="banner">
-        <div class="hero-content">
-          <h1 class="hero-title">About Pixel Phantoms</h1>
-          <div class="hero-subtitle">
-            <p class="motto">"From Students, For Students."</p>
-          </div>
-        </div>
+    <main id="main-about" tabindex="-1">
+      <!-- Hero Section - Matching Events page style -->
+      <section class="hero events-hero">
+        <h1>About Pixel Phantoms</h1>
+        <p>A student-driven tech community empowering learners through code, collaboration, and creativity.</p>
+        <div class="about-motto">"From Students, For Students."</div>
       </section>
 
       <!-- Mission Section -->
-      <section class="mission-section content-section" aria-labelledby="mission-heading">
+      <section class="content" id="mission-section">
         <div class="container">
-          <h2 class="section-title" id="mission-heading">Our Mission</h2>
-          <div class="mission-content">
-            <p class="mission-description">
-              Pixel Phantoms is a student-driven tech club dedicated to empowering learners through
-              structured learning modules, mentorship, project reviews, doubt-clearing sessions,
-              submissions, leaderboards, hackathons, and technical activities.
-            </p>
+          <h2 class="section-title">Our Mission</h2>
+          <div class="mission-description">
+            Pixel Phantoms is a student-driven tech club dedicated to empowering learners through
+            structured learning modules, mentorship, project reviews, doubt-clearing sessions,
+            submissions, leaderboards, hackathons, and technical activities.
+          </div>
+        </div>
+      </section>
 
-            <div class="focus-areas">
-              <h3 id="focus-areas-heading">Focus Areas</h3>
-              <div class="focus-grid" role="list">
-                <div class="focus-card" role="listitem" tabindex="0">
-                  <i class="fas fa-laptop-code icon" aria-hidden="true"></i>
-                  <h4>Web Development</h4>
-                  <p class="focus-card-desc">
-                    Full-stack development with modern frameworks and tools
-                  </p>
-                </div>
-                <div class="focus-card" role="listitem" tabindex="0">
-                  <i class="fas fa-code icon" aria-hidden="true"></i>
-                  <h4>Programming</h4>
-                  <p class="focus-card-desc">Data structures, algorithms, and competitive coding</p>
-                </div>
-                <div class="focus-card" role="listitem" tabindex="0">
-                  <i class="fas fa-paint-brush icon" aria-hidden="true"></i>
-                  <h4>Design</h4>
-                  <p class="focus-card-desc">
-                    UI/UX design principles and creative visual solutions
-                  </p>
-                </div>
-                <div class="focus-card" role="listitem" tabindex="0">
-                  <i class="fas fa-microchip icon" aria-hidden="true"></i>
-                  <h4>Embedded Systems</h4>
-                  <p class="focus-card-desc">IoT, microcontrollers, and hardware programming</p>
-                </div>
-                <div class="focus-card" role="listitem" tabindex="0">
-                  <i class="fab fa-github icon" aria-hidden="true"></i>
-                  <h4>Open Source</h4>
-                  <p class="focus-card-desc">
-                    Collaborative development and community contributions
-                  </p>
-                </div>
-                <div class="focus-card" role="listitem" tabindex="0">
-                  <i class="fas fa-users icon" aria-hidden="true"></i>
-                  <h4>Community Learning</h4>
-                  <p class="focus-card-desc">Peer-to-peer learning and knowledge sharing</p>
-                </div>
-              </div>
+      <!-- Focus Areas Section - Using same grid layout as events -->
+      <section class="content" id="focus-section">
+        <div class="container">
+          <h2 class="section-title">Focus Areas</h2>
+          <div class="focus-container" id="focus-container">
+            <div class="focus-card" role="listitem" tabindex="0">
+              <i class="fas fa-laptop-code icon" aria-hidden="true"></i>
+              <h3>Web Development</h3>
+              <p class="focus-card-desc">
+                Full-stack development with modern frameworks and tools
+              </p>
+            </div>
+            <div class="focus-card" role="listitem" tabindex="0">
+              <i class="fas fa-code icon" aria-hidden="true"></i>
+              <h3>Programming</h3>
+              <p class="focus-card-desc">Data structures, algorithms, and competitive coding</p>
+            </div>
+            <div class="focus-card" role="listitem" tabindex="0">
+              <i class="fas fa-paint-brush icon" aria-hidden="true"></i>
+              <h3>Design</h3>
+              <p class="focus-card-desc">
+                UI/UX design principles and creative visual solutions
+              </p>
+            </div>
+            <div class="focus-card" role="listitem" tabindex="0">
+              <i class="fas fa-microchip icon" aria-hidden="true"></i>
+              <h3>Embedded Systems</h3>
+              <p class="focus-card-desc">IoT, microcontrollers, and hardware programming</p>
+            </div>
+            <div class="focus-card" role="listitem" tabindex="0">
+              <i class="fab fa-github icon" aria-hidden="true"></i>
+              <h3>Open Source</h3>
+              <p class="focus-card-desc">
+                Collaborative development and community contributions
+              </p>
+            </div>
+            <div class="focus-card" role="listitem" tabindex="0">
+              <i class="fas fa-users icon" aria-hidden="true"></i>
+              <h3>Community Learning</h3>
+              <p class="focus-card-desc">Peer-to-peer learning and knowledge sharing</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ================= CORE COMMITTEE SECTION ================= -->
-
-      <section class="committee-section content-section" aria-labelledby="committee-heading">
+      <!-- Committee Section - Using same grid layout as events -->
+      <section class="content" id="committee-section">
         <div class="container">
-          <h2 class="section-title" id="committee-heading">Core Committee 2025</h2>
-
-          <div class="committee-grid" role="list">
+          <h2 class="section-title">Core Committee 2025</h2>
+          <div class="committee-container" id="committee-container">
             <div class="member-card" role="listitem">
               <h3>Prathamesh Wamane</h3>
-              <p>Director</p>
+              <p class="member-role">Director</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Krishna Shimpi</h3>
-              <p>President</p>
+              <p class="member-role">President</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Pratik Thorat</h3>
-              <p>Vice President</p>
+              <p class="member-role">Vice President</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Harsh Pawar</h3>
-              <p>Technical Head</p>
+              <p class="member-role">Technical Head</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Ayush Patil</h3>
-              <p>Treasurer</p>
+              <p class="member-role">Treasurer</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Laxmi Shingne</h3>
-              <p>Event Head</p>
+              <p class="member-role">Event Head</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Krushna Gite</h3>
-              <p>Project Manager</p>
+              <p class="member-role">Project Manager</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Pallavi Thote</h3>
-              <p>Recruitment Head</p>
+              <p class="member-role">Recruitment Head</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Pushkar Thakare</h3>
-              <p>Web Development Lead</p>
+              <p class="member-role">Web Development Lead</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Shruti Gaikwad</h3>
-              <p>Design Head</p>
+              <p class="member-role">Design Head</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Diksha Rakibe</h3>
-              <p>Embedded System Lead</p>
+              <p class="member-role">Embedded System Lead</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Rushabh Pekhale</h3>
-              <p>Social Media & Branding Head</p>
+              <p class="member-role">Social Media & Branding Head</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Sarvesh Aher</h3>
-              <p>Media and Publicity Head</p>
+              <p class="member-role">Media and Publicity Head</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Sayee Gosavi</h3>
-              <p>Mentor</p>
+              <p class="member-role">Mentor</p>
             </div>
-
             <div class="member-card" role="listitem">
               <h3>Mohit Jagtap</h3>
-              <p>Mentor</p>
+              <p class="member-role">Mentor</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Join Us CTA Section - Similar to Organize section in events -->
+      <section class="organize-section" id="join-section">
+        <div class="organize-container">
+          <div class="organize-content">
+            <h2>Join Our Community</h2>
+            <p>Ready to be part of something amazing? Join Pixel Phantoms today and start your journey in tech!</p>
+            <div class="join-buttons">
+              <a href="pages/join-us.html" class="btn-organize" style="margin-right: 15px;">
+                <i class="fas fa-user-plus"></i> Become a Member
+              </a>
+              <a href="events.html" class="btn-secondary">
+                <i class="fas fa-calendar-alt"></i> View Upcoming Events
+              </a>
+            </div>
+            <div class="join-stats">
+              <div class="stat-item">
+                <h4>150+</h4>
+                <p>Active Members</p>
+              </div>
+              <div class="stat-item">
+                <h4>25+</h4>
+                <p>Projects Built</p>
+              </div>
+              <div class="stat-item">
+                <h4>10+</h4>
+                <p>Hackathons Hosted</p>
+              </div>
+            </div>
+          </div>
+          <div class="organize-image">
+            <img src="https://picsum.photos/seed/community/400/500" alt="Pixel Phantoms Community" loading="lazy" />
           </div>
         </div>
       </section>
@@ -190,11 +238,29 @@
       renderFooter('');
     </script>
 
-    <script src="js/theme.min.js"></script>
-
-    <script src="js/back-to-top.min.js"></script>
-    <script src="js/scroll-progress.js"></script>
+    <script src="js/theme.js"></script>
     <script src="js/cursor-effect.js"></script>
-    <script src="js/scroll-buttons.js"></script>
+    <script src="js/back-to-top.js"></script>
+    <script src="js/scroll-progress.js"></script>
+    
+    <script>
+      // Add hover effects to cards
+      document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.focus-card, .member-card');
+        cards.forEach(card => {
+          card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px)';
+            this.style.boxShadow = '0 15px 30px rgba(0,0,0,0.15)';
+            this.style.borderColor = 'var(--accent-color)';
+          });
+          
+          card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '';
+            this.style.borderColor = '';
+          });
+        });
+      });
+    </script>
   </body>
 </html>
